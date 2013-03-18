@@ -1,0 +1,4 @@
+SQLALCHEMY_DATABASE_URI = "the db" 
+DEBUG = True
+SECRET_KEY = "ahsdf780ayhw4tyoyq23493@#$^&AW$JE^TY#$W"
+

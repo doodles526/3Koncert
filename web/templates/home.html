@@ -1,0 +1,21 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row-fluid">
+    <div class="span6">
+        <table class="table-striped">
+            <tr>
+                <th>Event Name</th> 
+                <th>Starting Time</th>
+                <th>Number Attending</th>
+            </tr>
+            {% for event in hot_events %}
+                {{ macros.render_table_row(event) }}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

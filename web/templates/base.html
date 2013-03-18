@@ -1,0 +1,28 @@
+<html>
+    <head>
+        {% block title %}
+        <title>3Koncert</title>
+        {% endblock %}
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css')}}" />
+
+        {% block head %}
+        {% endblock %}
+    </head>
+
+    <body>
+        <div id="content" class="container" style"background:#ff3300">
+            {% block page_header %}
+                <div id='base-header' class="page-header">
+                    <h1>3Koncert<small>A micro-framed event planner</small></h1>
+                </div>        
+            {% endblock %}
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <div id="footer">
+            {% block footer %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

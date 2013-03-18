@@ -1,0 +1,72 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+
+{% block page_header %}
+    <div id="event-title" class="page-header">
+        <h1>{{ event_info[0]['eName'] }}</h1>
+    </div>
+{% endblock %}
+{% block content %}
+
+    <div class="row-fluid">
+        <div id="event-main" class="span12">
+            <div id="event-people" class="span3">
+                <h2>People</h2>
+                <div id='event-admins' class="span12">
+                    <h3>Admins</h3>
+                    <ul>
+                    {% for person in event_info %}
+                        {% if person['admin_name'] %}
+                            <li> {{ person['admin_name'] }} </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div id='event-attendees' class="span12">
+                    <h3>Attending</h3>
+                    <ul>
+                        {% for person in event_info %}
+                            {% if person['attend_name'] %}
+                                <li>{{ person['attend_name'] }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div id="event-info" class="span6">
+                <div id="event-description" class="span8">
+                
+                    {{ event_info[0]['description'] }}
+                
+                </div>
+                <div id="event-times" class="span4">
+                    <h2>Time</h2>
+                    <div id="start-time" class="span12">
+                        <div id="start-time-header" class="span12">
+                            <h3>From</h3>
+                        </div>
+                        <div id="start-time-data" class="span12">
+                            <p>{{ event_info[0]['startTime'] }}</p>
+                        </div>
+                    </div>
+                    {% if event_info[0]['endTime'] %}
+                        <div id="end-time" class='span12'>
+                            <div id="end-time-header" class="span12">
+                                <h3>To</h3>
+                            </div>
+                            <div id="end-time-data" class="span12">
+                                <p>{{ event_info[0]['endTime'] }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+            </div>
+            <div id="event-todo" class="span3">
+                <h2>Todo</h2>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

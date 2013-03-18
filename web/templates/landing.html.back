@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="login">
+    <form method="POST" class="form-inline">
+        {{ login_form.name(placeholder="Username", class="input-small") }}
+        {{ login_form.password(placeholder="Password", class="input-small") }}
+        <input type="submit" value="Login" class="btn"></input>
+    </form>
+</div>
+
+<div id="registration">
+    <form method="POST" class="form-horizontal">
+        <div class='control-group'>
+            <label class="control-label" for="username">Username</label>
+                <div class="controls">
+                    {{ reg.username(id="username") }}
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+                <div class="controls">
+                    {{ reg.password(id="password") }}
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="confirm_pass">Confirm Password</label>
+                <div class="controls">
+                    {{ reg.confirm_pass(id="confirm_pass") }}
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="email">Email</label>
+                <div class="controls">
+                    {{ reg.email(id="email") }}
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="fName">First Name</label>
+                <div class="controls">
+                    {{ reg.fName(id="fName") }}
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="mName">Middle Name/Initial</label>
+                <div class="controls">
+                    {{ reg.mName(id="mName") }} 
+                </div>
+        </div>
+        
+        <div class="control-group">
+            <label class="control-label" for="lName">Last Name</label>
+                <div class="controls">
+                    {{ reg.lName(id="lName") }} 
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="zip">Zip Code</br>Used for finding local events</label>
+                <div class="controls">
+                    {{ reg.zip(id="zip") }}
+                </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="dob">Date of Birth</label>
+                <div class="controls">
+                    {{ reg.dob(id="dob") }}
+                </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="submit" value="Registration" class="btn"></input>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

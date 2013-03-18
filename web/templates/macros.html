@@ -1,0 +1,19 @@
+{% macro render_text_horizontal_field(field, ctl_grp_class_additions = '', label_class_addition = '', ctls_class_addition = '') %}
+    <div class="control-group {{ ctl_grp_class_additions }}">
+        <label class="control-label {{ label_class_additions }}">{{ field.label }}</label>
+        <div class="controls {{ ctls_class_additions }}" >
+            {{ field }}
+        </div>
+        
+    </div>
+{% endmacro %}
+
+{% macro render_table_row(data) %}
+    <tr>
+        {% for column in data %}
+            <td>
+                {{ column }}
+            </td>
+        {% endfor %}
+    </tr>
+{% endmacro %}

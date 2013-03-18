@@ -1,0 +1,23 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+
+{% block content %}
+<div class"row-fluid">
+    <div class="span12">
+        <form method=post class="form-horizontal">
+            {{ macros.render_text_horizontal_field(form.name) }}
+            {{ macros.render_text_horizontal_field(form.zip) }}
+            {{ macros.render_text_horizontal_field(form.description) }}
+            {{ macros.render_text_horizontal_field(form.start_time) }}
+            {{ macros.render_text_horizontal_field(form.end_time) }}
+            {{ macros.render_text_horizontal_field(form.external_link) }}
+            <div class="control-group">
+                <div class="controls">
+                    <input type="submit" value="Registration" class="btn"></input>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
