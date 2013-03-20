@@ -2,34 +2,39 @@ from web import db, app, login_manager
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from forms import *
 from flask import request, redirect, url_for, render_template, g, session, flash
-from sqlHelpers import * 
+from web.models import User, Event, Event_Todo
+from sqlalchemy import func
+
+@login_manager.user_loader
+def load_user(userid):
+    return User.query.filter_by(UID=userid).first()
 
 @app.route("/", methods=["GET", "POST"])
 def landing():
     login_form = LoginForm(request.form)
     registration_form = CreateAccount(request.form)
     if login_form.validate_on_submit():
-        if verify_user(g.db_connection, login_form.name.data, login_form.password.data):
-            #swap query for orm after cs275
-            #login_user(user)  
-            session['user'] = login_form.name.data
+        user = User.query.filter_by(uName=form.username.data).first()
+        if user.check_pass(login_form.password.data):
+            login_user(user)
             return redirect(url_for('home'))
         else:
             flash("Username/Password not recognized.")
             return redirect(url_for('landing'))
 
     if registration_form.validate_on_submit():
-        create_account(g.db_connection,
-                        registration_form.username.data,
+        new_user = User( registration_form.username.data,
                         registration_form.password.data,
-                        registration_form.email.data,
                         registration_form.fName.data,
                         registration_form.mName.data,
                         registration_form.lName.data,
                         int(registration_form.zip.data),
-                        registration_form.dob.data)
-        session['user'] = registration_form.username.data
-        return "successfully added user to db!!!" 
+                        registration_form.dob.dat,
+                        registration_form.email.data)
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user)
+        return redirect(url_for('home'))
     return render_template('landing.html', login_form = login_form, reg = registration_form)
 
 
@@ -37,7 +42,7 @@ def landing():
 def home():
     user_info = get_user_info(g.db_connection, session['user'])
     #We use this query over the helper in this case because we don't 
-    hot_events = g.db_connection.execute("SELECT e.eName, e.startTime, count(et.EID) FROM Events e INNER JOIN Event_Attendees et on e.EID = et.EID where e.zip = %d GROUP BY et.EID ORDER BY count(et.EID)  DESC LIMIT 5" % (user_info[4])).fetchall()
+    hot_events = db.session.query(Event, func.count(attendees))
     return render_template('home.html', user_info=user_info, hot_events=hot_events)
 
 @app.route('/create_event', methods=["GET", "POST"])

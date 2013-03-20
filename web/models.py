@@ -1,17 +1,37 @@
 from web import db, login_manager
 import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+
+todo_assignment = db.Table("event_todo_assignment", db.Model.metadata,
+    db.Column('todo_index', db.Integer(), db.ForeignKey('event_todo.index')),
+    db.Column('UID', db.Integer(), db.ForeignKey('users.UID'))
+)
+
+event_admin = db.Table('event_admin', db.Model.metadata,
+    db.Column('UID', db.Integer(), db.ForeignKey("users.UID")),
+    db.Column('EID', db.Integer(), db.ForeignKey("events.EID"))
+)
+
+event_attendees = db.Table('event_attendees', db.Model.metadata,
+    db.Column('UID', db.Integer(), db.ForeignKey('users.UID')),
+    db.Column('EID', db.Integer(), db.ForeignKey('events.EID'))
+)
 
 
 class Event(db.Model):
-    __tablename__ = "Events"
+    __tablename__ = "events"
     EID = db.Column(db.Integer(), primary_key=True)
     eName = db.Column(db.String(255), nullable = False)
     zip = db.Column(db.Integer())
     startTime = db.Column(db.DateTime(), nullable = False)
     endTime = db.Column(db.DateTime())
     description = db.Column(db.Text())
-    creatorID = db.Column(db.Integer(), db.ForeignKey('Users.UID'))
+    creatorID = db.Column(db.Integer(), db.ForeignKey('users.UID'))
     externalLink = db.Column(db.String(255))
+    admins = db.relationship("User", secondary=event_admin, backref=db.backref("admin_of", lazy='dynamic'), lazy='dynamic')
+    attendees = db.relationship("User", secondary=event_attendees, backref=db.backref('attending', lazy='dynamic'), lazy='dynamic')
     
     def __init__(self, eName, zip, startTime, endTime, description, creatorID, externalLink = None):
         self.eName = eName
@@ -23,12 +43,13 @@ class Event(db.Model):
         self.externalLink = externalLink
 
 class Event_Todo(db.Model):
-    __tablename__ = "Event_todo"
+    __tablename__ = "event_todo"
     index = db.Column(db.Integer(), primary_key = True)
-    EID = db.Column(db.Integer(), db.ForeignKey('Events.EID'))
+    EID = db.Column(db.Integer(), db.ForeignKey('events.EID'))
     name = db.Column(db.String(255), nullable = False)
     description = db.Column(db.Text())
     complete = db.Column(db.Boolean())
+    assigned_to = db.relationship("User", secondary="todo_assignment", backref=db.backref('todos', lazy='dynamic'), lazy='dynamic')
 
     def __init__(self, name, description):
         self.name = name
@@ -36,7 +57,7 @@ class Event_Todo(db.Model):
         self.complete = False
 
 class User(db.Model):
-    __tablename__ = 'Users'
+    __tablename__ = 'users'
     UID = db.Column(db.Integer(), primary_key = True)
     uName = db.Column(db.String(16), nullable = False)
     pWord = db.Column(db.String(255), nullable = False)
@@ -50,7 +71,7 @@ class User(db.Model):
 
     def __init__(self, uName, pWord, dateBirth, fName, mName, lName, zip, eMail):
         self.uName = uName 
-        self.pWord = pWord
+        self.pWord = generate_password_hash(pWord)
         self.dateBirth = dateBirth
         self.fName = fName
         self.mName = mName
@@ -59,23 +80,18 @@ class User(db.Model):
         self.eMail = eMail
         self.createDate = datetime.now()
 
+    def check_pass(clear_pass):
+        return check_password_hash(self.pWord, clear_pass)
 
-Todo_Assignment = db.Table("Event_todo_assignment", db.Model.metadata,
-    db.Column('index', db.Integer(), primary_key=True),
-    db.Column('todo_index', db.Integer(), db.ForeignKey('Event_todo.index')),
-    db.Column('UID', db.Integer(), db.ForeignKey('Users.UID'))
-)
+    def is_authenticated():
+        return True
 
-Event_Admin = db.Table('Event_Admin', db.Model.metadata,
-    db.Column('index', db.Integer(), primary_key = True),
-    db.Column('UID', db.Integer(), db.ForeignKey("Users.UID")),
-    db.Column('EID', db.Integer(), db.ForeignKey("Events.EID"))
-)
+    def is_active():
+        return True
 
-Event_Attendees = db.Table('Event_Attendees', db.Model.metadata,
-    db.Column('index', db.Integer(), primary_key = True),
-    db.Column('UID', db.Integer(), db.ForeignKey('Users.UID')),
-    db.Column('EID', db.Integer(), db.ForeignKey('Events.EID'))
-)
+    def is_anonymous():
+        return False
 
+    def get_id():
+        return unicode(self.UID)
 
