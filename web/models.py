@@ -49,7 +49,7 @@ class Event_Todo(db.Model):
     name = db.Column(db.String(255), nullable = False)
     description = db.Column(db.Text())
     complete = db.Column(db.Boolean())
-    assigned_to = db.relationship("User", secondary="todo_assignment", backref=db.backref('todos', lazy='dynamic'), lazy='dynamic')
+    assigned_to = db.relationship("User", secondary=todo_assignment, backref=db.backref('todos', lazy='dynamic'), lazy='dynamic')
 
     def __init__(self, name, description):
         self.name = name
@@ -78,20 +78,20 @@ class User(db.Model):
         self.lName = lName
         self.zip = zip
         self.eMail = eMail
-        self.createDate = datetime.now()
+        self.createDate = datetime.datetime.now()
 
     def check_pass(clear_pass):
         return check_password_hash(self.pWord, clear_pass)
 
-    def is_authenticated():
+    def is_authenticated(self):
         return True
 
-    def is_active():
+    def is_active(self):
         return True
 
-    def is_anonymous():
+    def is_anonymous(self):
         return False
 
-    def get_id():
+    def get_id(self):
         return unicode(self.UID)
 

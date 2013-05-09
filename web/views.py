@@ -9,8 +9,15 @@ from sqlalchemy import func
 def load_user(userid):
     return User.query.filter_by(UID=userid).first()
 
+@login_required
+@app.route("/logout"):
+    logout_user()
+    redirect(url_for('home'))
+
 @app.route("/", methods=["GET", "POST"])
 def landing():
+    if current_user:
+        redirect(url_for('home'))
     login_form = LoginForm(request.form)
     registration_form = CreateAccount(request.form)
     if login_form.validate_on_submit():
@@ -25,11 +32,11 @@ def landing():
     if registration_form.validate_on_submit():
         new_user = User( registration_form.username.data,
                         registration_form.password.data,
+                        registration_form.dob.data,
                         registration_form.fName.data,
                         registration_form.mName.data,
                         registration_form.lName.data,
                         int(registration_form.zip.data),
-                        registration_form.dob.dat,
                         registration_form.email.data)
         db.session.add(new_user)
         db.session.commit()
@@ -38,11 +45,12 @@ def landing():
     return render_template('landing.html', login_form = login_form, reg = registration_form)
 
 
+@login_required
 @app.route('/home')
 def home():
-    user_info = get_user_info(g.db_connection, session['user'])
     #We use this query over the helper in this case because we don't 
-    hot_events = db.session.query(Event, func.count(attendees))
+
+    hot_events = db.session.query(Event, func.count(Event.attendees)).group_by(Event.EID)
     return render_template('home.html', user_info=user_info, hot_events=hot_events)
 
 @app.route('/create_event', methods=["GET", "POST"])
