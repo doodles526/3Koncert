@@ -10,7 +10,8 @@ def load_user(userid):
     return User.query.filter_by(id=userid).first()
 
 @login_required
-@app.route("/logout"):
+@app.route("/logout")
+def logout():
     logout_user()
     redirect(url_for('home'))
 
