@@ -2,13 +2,33 @@
     <div class="control-group {{ ctl_grp_class_additions }}">
         <label class="control-label {{ label_class_additions }}">{{ field.label }}</label>
         <div class="controls {{ ctls_class_additions }}" >
-            {{ field }}
+            {{ field(size=16)|safe }}
         </div>
         
     </div>
 {% endmacro %}
 
-{% macro render_table_row(data) %}
+{% macro render_datetime_field_horizontal(field, name, format="mm dd yyyy - hh:ii", minView='hour') %}
+    <div class="control-group input-append date"  id="datetime{{ name }}">
+        <label class="control-label">{{ field.label }}</label>
+        <div class="controls">
+            {{ field(readonly=1) }}
+            <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+     </div>
+     </br> 
+     <script type="text/javascript">
+        $("#datetime{{ name }}").datetimepicker({
+            format: "{{ format }}",
+            autoclose: true,
+            showMeridian: true,
+            pickerPosition: "bottom-left",
+            minView: "{{ minView }}"
+            });
+    </script> 
+{% endmacro %}
+
+{% macro render_table_row(daTA) %}
     <tr>
         {% for column in data %}
             <td>

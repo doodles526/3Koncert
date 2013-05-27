@@ -1,6 +1,11 @@
 {% import "macros.html" as macros %}
 {% extends "base.html" %}
 
+{% block head %}
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='datetimepicker/css/datetimepicker.css') }}"></link>
+<script type="text/javascript" src="{{ url_for('static', filename='datetimepicker/js/bootstrap-datetimepicker.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 <div class"row-fluid">
     <div class="span12">
@@ -8,8 +13,8 @@
             {{ macros.render_text_horizontal_field(form.name) }}
             {{ macros.render_text_horizontal_field(form.zip) }}
             {{ macros.render_text_horizontal_field(form.description) }}
-            {{ macros.render_text_horizontal_field(form.start_time) }}
-            {{ macros.render_text_horizontal_field(form.end_time) }}
+            {{ macros.render_datetime_field_horizontal(form.start_time, '1') }}
+            {{ macros.render_datetime_field_horizontal(form.end_time, '2') }}
             {{ macros.render_text_horizontal_field(form.external_link) }}
             <div class="control-group">
                 <div class="controls">
@@ -19,5 +24,14 @@
         </form>
     </div>
 </div>
+
+<script type="text/javascript">
+  $(function() {
+    $('#datetimepicker1').datetimepicker({
+        language: 'en',
+        pick12HourFormat: true
+        });
+    });
+</script>
 
 {% endblock %}
