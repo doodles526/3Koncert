@@ -6,29 +6,29 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 todo_assignment = db.Table("event_todo_assignment", db.Model.metadata,
     db.Column('todo_index', db.Integer(), db.ForeignKey('event_todo.index')),
-    db.Column('UID', db.Integer(), db.ForeignKey('users.UID'))
+    db.Column('uid', db.Integer(), db.ForeignKey('users.id'))
 )
 
 event_admin = db.Table('event_admin', db.Model.metadata,
-    db.Column('UID', db.Integer(), db.ForeignKey("users.UID")),
-    db.Column('EID', db.Integer(), db.ForeignKey("events.EID"))
+    db.Column('uid', db.Integer(), db.ForeignKey("users.id")),
+    db.Column('eid', db.Integer(), db.ForeignKey("events.id"))
 )
 
 event_attendees = db.Table('event_attendees', db.Model.metadata,
-    db.Column('UID', db.Integer(), db.ForeignKey('users.UID')),
-    db.Column('EID', db.Integer(), db.ForeignKey('events.EID'))
+    db.Column('uid', db.Integer(), db.ForeignKey('users.id')),
+    db.Column('eid', db.Integer(), db.ForeignKey('events.id'))
 )
 
 
 class Event(db.Model):
     __tablename__ = "events"
-    EID = db.Column(db.Integer(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True)
     eName = db.Column(db.String(255), nullable = False)
     zip = db.Column(db.Integer())
     startTime = db.Column(db.DateTime(), nullable = False)
     endTime = db.Column(db.DateTime())
     description = db.Column(db.Text())
-    creatorID = db.Column(db.Integer(), db.ForeignKey('users.UID'))
+    creatorID = db.Column(db.Integer(), db.ForeignKey('users.id'))
     externalLink = db.Column(db.String(255))
     admins = db.relationship("User", secondary=event_admin, backref=db.backref("admin_of", lazy='dynamic'), lazy='dynamic')
     attendees = db.relationship("User", secondary=event_attendees, backref=db.backref('attending', lazy='dynamic'), lazy='dynamic')
@@ -45,7 +45,7 @@ class Event(db.Model):
 class Event_Todo(db.Model):
     __tablename__ = "event_todo"
     index = db.Column(db.Integer(), primary_key = True)
-    EID = db.Column(db.Integer(), db.ForeignKey('events.EID'))
+    id = db.Column(db.Integer(), db.ForeignKey('events.id'))
     name = db.Column(db.String(255), nullable = False)
     description = db.Column(db.Text())
     complete = db.Column(db.Boolean())
@@ -58,7 +58,7 @@ class Event_Todo(db.Model):
 
 class User(db.Model):
     __tablename__ = 'users'
-    UID = db.Column(db.Integer(), primary_key = True)
+    id = db.Column(db.Integer(), primary_key = True)
     uName = db.Column(db.String(16), nullable = False)
     pWord = db.Column(db.String(255), nullable = False)
     dateBirth = db.Column(db.Date(), nullable = False)
@@ -93,5 +93,5 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        return unicode(self.UID)
+        return unicode(self.id)
 

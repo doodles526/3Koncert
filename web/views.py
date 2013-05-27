@@ -7,7 +7,7 @@ from sqlalchemy import func
 
 @login_manager.user_loader
 def load_user(userid):
-    return User.query.filter_by(UID=userid).first()
+    return User.query.filter_by(id=userid).first()
 
 @login_required
 @app.route("/logout"):
@@ -50,13 +50,12 @@ def landing():
 def home():
     #We use this query over the helper in this case because we don't 
 
-    hot_events = db.session.query(Event, func.count(Event.attendees)).group_by(Event.EID)
-    return render_template('home.html', user_info=user_info, hot_events=hot_events)
+    hot_events = db.session.query(Event, func.count(Event.attendees)).group_by(Event.id)
+    return render_template('home.html', user_info=current_user, hot_events=hot_events)
 
 @app.route('/create_event', methods=["GET", "POST"])
 def create_event():
     form = CreateEvent(request.form)
-    user_info = get_user_info(g.db_connection, session['user'])
     if form.validate():
         userid = g.db_connection("select UID from Users where uName = '%s'" % (session['user'])).first()[0]
         create_event(g.db_connection, form.name.data, form.zip.data, form.start_time.data, form.end_time.data, str(userid), form.external_link.data)
@@ -65,7 +64,7 @@ def create_event():
         return redirect(url_for('event'))
 
     else:
-        return render_template('create_event.html', form=form, user_info=user_info)
+        return render_template('create_event.html', form=form, user_info=current_user)
 
 
 @app.route('/event/<event_id>')
