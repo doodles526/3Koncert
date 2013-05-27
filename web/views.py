@@ -22,7 +22,7 @@ def landing():
     login_form = LoginForm(request.form)
     registration_form = CreateAccount(request.form)
     if login_form.validate_on_submit():
-        user = User.query.filter_by(uName=form.username.data).first()
+        user = User.query.filter_by(uName=login_form.name.data).first()
         if user.check_pass(login_form.password.data):
             login_user(user)
             return redirect(url_for('home'))
