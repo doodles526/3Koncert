@@ -58,8 +58,15 @@ def home():
 def create_event():
     form = CreateEvent(request.form)
     if form.validate():
-        userid = g.db_connection("select UID from Users where uName = '%s'" % (session['user'])).first()[0]
-        create_event(g.db_connection, form.name.data, form.zip.data, form.start_time.data, form.end_time.data, str(userid), form.external_link.data)
+        new_event = Event(form.name.data,
+                          int(form.zip.data),
+                          form.start_time.data,
+                          form.end_time.data,
+                          form.description.data,
+                          current_user.id,
+                          form.external_link.data)
+        db.session.add(new_event)
+        db.session.commit()
         print "success"
         flash("Event successfully created!")
         return redirect(url_for('event'))
