@@ -80,7 +80,7 @@ class User(db.Model):
         self.eMail = eMail
         self.createDate = datetime.datetime.now()
 
-    def check_pass(clear_pass):
+    def check_pass(self, clear_pass):
         return check_password_hash(self.pWord, clear_pass)
 
     def is_authenticated(self):
