@@ -31,7 +31,7 @@ def landing():
             return redirect(url_for('landing'))
 
     if registration_form.validate_on_submit():
-        new_user = User( registration_form.username.data,
+        new_user = User(registration_form.username.data,
                         registration_form.password.data,
                         registration_form.dob.data,
                         registration_form.fName.data,
